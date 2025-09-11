@@ -1,0 +1,33 @@
+services:
+  - type: web
+    name: activeadmin-app
+    env: ruby
+    plan: starter
+    buildCommand: |
+      bundle install
+      bundle exec rails assets:precompile
+      bundle exec rails db:create db:migrate db:seed
+    startCommand: bundle exec rails server -p $PORT -e production
+    envVars:
+      - key: RAILS_ENV
+        value: production
+      - key: RAILS_SERVE_STATIC_FILES
+        value: true
+      - key: RAILS_LOG_TO_STDOUT
+        value: true
+      - key: SECRET_KEY_BASE
+        generateValue: true
+    dockerfilePath: ./Dockerfile.render
+    dockerContext: ./tmp/development_apps/rails_80
+
+  - type: pserv
+    name: activeadmin-db
+    plan: starter
+    env: postgresql
+    envVars:
+      - key: POSTGRES_DB
+        value: activeadmin_production
+      - key: POSTGRES_USER
+        value: activeadmin_user
+      - key: POSTGRES_PASSWORD
+        generateValue: true

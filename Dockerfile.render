@@ -1,0 +1,58 @@
+# Optimized Dockerfile for Render deployment
+FROM ruby:3.4.5-slim
+
+# Set environment variables
+ENV RAILS_ENV=production
+ENV RAILS_SERVE_STATIC_FILES=true
+ENV RAILS_LOG_TO_STDOUT=true
+
+# Install system dependencies
+RUN apt-get update -qq && \
+    apt-get install -y --no-install-recommends \
+    build-essential \
+    libpq-dev \
+    curl \
+    git \
+    nodejs \
+    npm \
+    libyaml-dev \
+    pkg-config \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Yarn
+RUN npm install -g yarn
+
+# Set working directory
+WORKDIR /app
+
+# Copy the test application
+COPY . .
+
+# Copy ActiveAdmin gem files from parent directory
+COPY ../../../. /activeadmin
+RUN bundle config --local local.activeadmin /activeadmin
+
+# Set the BUNDLE_GEMFILE to use the main ActiveAdmin Gemfile
+ENV BUNDLE_GEMFILE=/activeadmin/Gemfile
+
+# Install Ruby dependencies
+RUN bundle config --global without 'development test' && \
+    bundle install
+
+# Install Node.js dependencies
+RUN yarn install
+
+# Create a non-root user
+RUN adduser --disabled-password --gecos '' appuser && \
+    chown -R appuser:appuser /app
+USER appuser
+
+# Expose port
+EXPOSE 3000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:3000/admin || exit 1
+
+# Start the application
+CMD ["bundle", "exec", "rails", "server", "-b", "0.0.0.0", "-p", "3000"]

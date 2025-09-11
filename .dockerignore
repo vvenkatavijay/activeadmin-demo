@@ -1,0 +1,68 @@
+# Git
+.git
+.gitignore
+
+# Documentation
+README.md
+CHANGELOG.md
+CONTRIBUTING.md
+CODE_OF_CONDUCT.md
+UPGRADING.md
+docs/
+
+# Test files
+spec/
+features/
+test/
+.rspec
+cucumber.yml
+
+# Development files
+tmp/
+log/
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Node modules (will be installed in container)
+node_modules/
+
+# Coverage reports
+coverage/
+
+# Rake files
+Rakefile
+tasks/
+
+# Gem files
+*.gem
+*.gemspec
+
+# Environment files
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Database files
+*.sqlite3
+*.db
+
+# Build artifacts
+app/assets/builds/
+public/assets/
+public/packs/
+public/packs-test/
+
+# Temporary files
+tmp/
+log/
