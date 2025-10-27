@@ -75,7 +75,7 @@ jobs:
           bin/cucumber --profile class-reloading
       - name: Rename coverage file by matrix run
         run: mv coverage/coverage.xml coverage/coverage-ruby-${{ matrix.ruby }}-${{ matrix.rails }}.xml
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         with:
           name: coverage-ruby-${{ matrix.ruby }}-${{ matrix.rails }}
           path: coverage
@@ -89,7 +89,7 @@ jobs:
     needs: [test]
     steps:
       - uses: actions/checkout@v5
-      - uses: actions/download-artifact@v5
+      - uses: actions/download-artifact@v6
         with:
           path: coverage
           pattern: coverage-ruby-*
@@ -105,14 +105,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - uses: tj-actions/changed-files@v46
+      - uses: tj-actions/changed-files@v47
         id: changed-files
         with:
           files: |
             docs/**
             package*.json
             yarn.lock
-      - uses: actions/setup-node@v5
+      - uses: actions/setup-node@v6
         if: steps.changed-files.outputs.any_changed == 'true'
         with:
           node-version: 22
